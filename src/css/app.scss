@@ -1,0 +1,11 @@
+// app global css in SCSS form
+@font-face {
+    font-family: 'font-raleway';
+    src: url('../../public/fonts/Raleway-VariableFont_wght.ttf')
+        format('truetype');
+    font-display: swap;
+}
+
+.font-raleway {
+    font-family: $brand-font-family;
+}
