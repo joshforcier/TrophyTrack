@@ -1,13 +1,19 @@
 <template>
-    <BaseTable title="Notifications" :rows="rows" :columns="columns" />
+    <BaseTable
+        title="Notifications"
+        :rows="rows"
+        :columns="columns"
+        @update:notify="handleNotifyUpdate"
+    />
     <q-btn @click="tableDataStore.getStateNotifications"></q-btn>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { capitalizeEachWord } from '../composables/useCapitalize';
 import BaseTable from '../components/BaseTable.vue';
 import { useTableDataStore } from '../stores/tableData';
+import { StateData } from '../types/types';
 
 const tableDataStore = useTableDataStore();
 tableDataStore.getStateNotifications();
@@ -75,52 +81,63 @@ const isSpeciesSelected = (species: string): boolean => {
         tableDataStore.selectedSpecies.includes(capitalizeEachWord(species))
     );
 };
-const rows = computed(() => {
-    let results = [];
 
-    for (const state in tableDataStore.stateNotifications) {
-        if (isStateSelected(state)) {
-            for (const species in tableDataStore.stateNotifications[state]) {
-                if (isSpeciesSelected(species)) {
-                    const notifications = (
-                        tableDataStore.stateNotifications as any
-                    )[state][species].notifications;
-                    for (const notification of notifications) {
-                        results.push({
-                            id: `${state
-                                .toLowerCase()
-                                .replace(/\s+/g, '_')}_${species
-                                .toLowerCase()
-                                .replace(/\s+/g, '_')}_${notification.name
-                                .toLowerCase()
-                                .replace(/\s+/g, '_')}`,
+const rows = ref();
+function formatForId(str: string): string {
+    return str.toLowerCase().replace(/\s+/g, '_');
+}
+
+function getSortedResults(newStateNotifications: StateData) {
+    return Object.entries(newStateNotifications)
+        .filter(([state]) => isStateSelected(state))
+        .flatMap(([state, speciesData]) =>
+            Object.entries(speciesData)
+                .filter(([species]) => isSpeciesSelected(species))
+                .flatMap(([species, { notifications }]) =>
+                    notifications?.map((notification) => {
+                        const id = `${formatForId(state)}_${formatForId(
+                            species
+                        )}_${formatForId(notification.name)}`;
+                        return {
+                            id,
                             state: capitalizeEachWord(state),
                             species: capitalizeEachWord(species),
                             notificationName: notification.name,
-                            notify: notification.notify,
-                        });
-                    }
-                }
-            }
-        }
+                            notify: tableDataStore.userNotifications.includes(
+                                id
+                            ),
+                        };
+                    })
+                )
+        )
+        .sort(
+            (a, b) =>
+                a.state.localeCompare(b.state) ||
+                a.species.localeCompare(b.species) ||
+                a.notificationName.localeCompare(b.notificationName)
+        );
+}
+
+watch(
+    () => tableDataStore.stateNotifications,
+    (newStateNotifications) => {
+        rows.value = getSortedResults(newStateNotifications);
+    },
+    { deep: true }
+);
+
+function handleNotifyUpdate({
+    rowId,
+    value,
+}: {
+    rowId: string;
+    value: boolean;
+}) {
+    const rowIndex = rows.value.findIndex((r) => r.id === rowId);
+    if (rowIndex !== -1) {
+        rows.value[rowIndex].notify = value;
     }
-
-    results.sort((a, b) => {
-        const stateComparison = a.state.localeCompare(b.state);
-        if (stateComparison !== 0) {
-            return stateComparison;
-        } else {
-            const speciesComparison = a.species.localeCompare(b.species);
-            if (speciesComparison !== 0) {
-                return speciesComparison;
-            } else {
-                return a.notificationName.localeCompare(b.notificationName);
-            }
-        }
-    });
-
-    return results;
-});
+}
 </script>
 
 <style lang="sass">

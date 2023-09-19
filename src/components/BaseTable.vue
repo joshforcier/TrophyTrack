@@ -53,23 +53,20 @@
                     <q-checkbox
                         :modelValue="props.row.notify"
                         @update:modelValue="
-                            (val) =>
-                                updateNotifyValue(
-                                    props.row.state,
-                                    props.row.species,
-                                    props.row.notificationName,
-                                    val
-                                )
+                            (val) => updateNotify(props.row.id, val)
                         "
                     />
-                  
                 </q-td>
             </template>
             <template v-slot:body-cell-bonus="props">
-                <q-td :props="props"><q-input v-model="props.row.bonus" dense></q-input></q-td>
+                <q-td :props="props"
+                    ><q-input v-model="props.row.bonus" dense></q-input
+                ></q-td>
             </template>
             <template v-slot:body-cell-preference="props">
-                <q-td :props="props">{{ props.row.preference }}</q-td>
+                <q-td :props="props"
+                    ><q-input v-model="props.row.preference" dense></q-input
+                ></q-td>
             </template>
         </q-table>
     </div>
@@ -79,30 +76,15 @@
 import { ref, computed, watch } from 'vue';
 import { useTableDataStore } from '../stores/tableData';
 import { capitalizeEachWord } from '../composables/useCapitalize';
-
-interface RowType {
-    id: string;
-    state: string;
-    species: string;
-    notificationName: string;
-    notify: boolean;
-}
-
-interface ColumnType {
-    name: string;
-    label: string;
-    field: string | ((row: any) => any);
-    required?: boolean;
-    align?: 'left' | 'right' | 'center';
-    sortable?: boolean;
-    sort?: ((a: any, b: any, rowA: any, rowB: any) => number);
-}
+import { RowType, ColumnType } from '../types/types';
 
 const tableDataStore = useTableDataStore();
 
 const loading = ref(true);
+const userNotifications = ref<string[]>([]);
 setTimeout(() => {
     tableDataStore.getUserNotifications();
+    userNotifications.value = tableDataStore.userNotifications;
     tableDataStore.getStateNotifications();
     loading.value = false;
 }, 2000);
@@ -128,6 +110,8 @@ const props = defineProps({
     },
 });
 
+const emits = defineEmits(['update:notify']);
+
 const species = computed(() => {
     const speciesList: string[] = [];
     if (!tableDataStore.stateNotifications) return [];
@@ -150,7 +134,7 @@ const states = computed(() => {
 });
 
 watch(
-    () => tableDataStore.stateNotifications, // Wrap it in a function
+    () => tableDataStore.stateNotifications,
     () => {
         species.value;
         states.value;
@@ -158,21 +142,21 @@ watch(
     { deep: true }
 );
 
-function updateNotifyValue(
-    state: string,
-    species: string,
-    name: string,
-    newValue: boolean
-) {
-    // tableDataStore.updateNotify(state, species, name, newValue);
-}
+// function updateUserNotifications(notifications: string[]) {
+//     tableDataStore.updateUserNotifications(notifications);
+// }
 
 const saving = ref(false);
 async function save() {
     saving.value = true;
     setTimeout(() => {
         alert('TODO');
+        // updateUserNotifications(userNotifications.value)
         saving.value = false;
     }, 1000);
+}
+
+function updateNotify(rowId: string, value: boolean) {
+    emits('update:notify', { rowId, value });
 }
 </script>

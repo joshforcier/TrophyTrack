@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { StateData } from '../types/types';
 
 export const useTableDataStore = defineStore('tableData', () => {
     // State
@@ -37,10 +38,11 @@ export const useTableDataStore = defineStore('tableData', () => {
     const userPoints = ref<StateData>({});
 
     // Actions
-    const getUserNotifications = async () => {
+    const getUserNotifications = () => {
         userNotifications.value = [
             'wyoming_elk_nonresident',
             'wyoming_elk_nonresident_preference_point',
+            'montana_elk_bonus_point',
         ];
     };
 
@@ -189,25 +191,10 @@ export const useTableDataStore = defineStore('tableData', () => {
         };
     };
 
-    // const updateNotify = (
-    //     stateName: string,
-    //     speciesName: string,
-    //     notificationName: string,
-    //     newNotifyValue: boolean
-    // ) => {
-    //     const speciesData =
-    //         stateNotifications.value[stateName.toLowerCase()][
-    //             speciesName.toLowerCase()
-    //         ];
-    //     if (speciesData) {
-    //         const notification = speciesData.notifications.find(
-    //             (n) => n.name === notificationName
-    //         );
-    //         if (notification) {
-    //             notification.notify = newNotifyValue;
-    //         }
-    //     }
-    // };
+    const updateUserNotifications = (notifications: string[]) => {
+        // TODO
+        userNotifications.value = notifications;
+    };
 
     return {
         selectedStates,
@@ -218,25 +205,6 @@ export const useTableDataStore = defineStore('tableData', () => {
         getUserNotifications,
         getUserPoints,
         getStateNotifications,
-        // updateNotify,
+        updateUserNotifications,
     };
 });
-
-interface Notification {
-    name: string;
-    id: string;
-    deadline: Date;
-}
-
-interface SpeciesData {
-    bonus?: number;
-    preference?: number;
-    notifications?: Notification[];
-}
-
-// Nested dynamic keys for species inside each state
-interface StateData {
-    [state: string]: {
-        [species: string]: SpeciesData;
-    };
-}
