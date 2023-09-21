@@ -15,7 +15,7 @@
                 <div class="flex column q-mb-md" style="width: 100%">
                     <div class="flex justify-between">
                         <q-select
-                            v-model="tableDataStore.selectedStates"
+                            v-model="stateSpeciesDataStore.selectedStates"
                             multiple
                             :options="states"
                             use-chips
@@ -28,7 +28,7 @@
                         />
 
                         <q-select
-                            v-model="tableDataStore.selectedSpecies"
+                            v-model="stateSpeciesDataStore.selectedSpecies"
                             multiple
                             :options="species"
                             use-chips
@@ -74,18 +74,18 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useTableDataStore } from '../stores/tableData';
+import { useStateSpeciesDataStore } from '../stores/stateSpeciesData';
 import { capitalizeEachWord } from '../composables/useCapitalize';
 import { RowType, ColumnType } from '../types/types';
 
-const tableDataStore = useTableDataStore();
+const stateSpeciesDataStore = useStateSpeciesDataStore();
 
 const loading = ref(true);
 const userNotifications = ref<string[]>([]);
 setTimeout(() => {
-    tableDataStore.getUserNotifications();
-    userNotifications.value = tableDataStore.userNotifications;
-    tableDataStore.getStateNotifications();
+    stateSpeciesDataStore.getUserNotifications();
+    userNotifications.value = stateSpeciesDataStore.userNotifications;
+    stateSpeciesDataStore.getStateNotifications();
     loading.value = false;
 }, 2000);
 
@@ -114,10 +114,11 @@ const emits = defineEmits(['update:notify']);
 
 const species = computed(() => {
     const speciesList: string[] = [];
-    if (!tableDataStore.stateNotifications) return [];
+    if (!stateSpeciesDataStore.stateNotifications) return [];
 
-    for (const stateKey in tableDataStore.stateNotifications) {
-        const speciesInState = tableDataStore.stateNotifications[stateKey];
+    for (const stateKey in stateSpeciesDataStore.stateNotifications) {
+        const speciesInState =
+            stateSpeciesDataStore.stateNotifications[stateKey];
 
         for (const speciesKey in speciesInState) {
             speciesList.push(capitalizeEachWord(speciesKey));
@@ -127,24 +128,20 @@ const species = computed(() => {
     return [...new Set(speciesList)];
 });
 const states = computed(() => {
-    if (!tableDataStore.stateNotifications) return [];
-    return [...new Set(Object.keys(tableDataStore.stateNotifications))]
+    if (!stateSpeciesDataStore.stateNotifications) return [];
+    return [...new Set(Object.keys(stateSpeciesDataStore.stateNotifications))]
         .map((st) => capitalizeEachWord(st))
         .sort();
 });
 
 watch(
-    () => tableDataStore.stateNotifications,
+    () => stateSpeciesDataStore.stateNotifications,
     () => {
         species.value;
         states.value;
     },
     { deep: true }
 );
-
-// function updateUserNotifications(notifications: string[]) {
-//     tableDataStore.updateUserNotifications(notifications);
-// }
 
 const saving = ref(false);
 async function save() {

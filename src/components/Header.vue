@@ -34,6 +34,9 @@
         >
             Logout
         </q-btn>
+        <q-btn to="/login" v-if="!userStore.userData" color="secondary">
+            Login
+        </q-btn>
     </q-drawer>
 </template>
 
@@ -94,7 +97,7 @@ function toggleLeftDrawer() {
 }
 
 const $q = useQuasar();
-$q.dark.isActive = userStore.userProfile.isDark;
+$q.dark.isActive = userStore.userProfile?.isDark ?? false;
 const isDark = ref($q.dark.isActive);
 $q.dark.set(isDark.value);
 watch(

@@ -6,7 +6,7 @@
             :columns="columns"
             @update:notify="handleNotifyUpdate"
         />
-        <q-btn @click="tableDataStore.getStateNotifications"></q-btn>
+        <q-btn @click="stateSpeciesDataStore.getStateNotifications"></q-btn>
     </q-page>
 </template>
 
@@ -14,11 +14,11 @@
 import { ref, computed, watch } from 'vue';
 import { capitalizeEachWord } from '../composables/useCapitalize';
 import BaseTable from '../components/BaseTable.vue';
-import { useTableDataStore } from '../stores/tableData';
+import { useStateSpeciesDataStore } from '../stores/stateSpeciesData';
 import { StateData } from '../types/types';
 
-const tableDataStore = useTableDataStore();
-tableDataStore.getStateNotifications();
+const stateSpeciesDataStore = useStateSpeciesDataStore();
+stateSpeciesDataStore.getStateNotifications();
 
 const columns = ref<
     {
@@ -61,26 +61,28 @@ const columns = ref<
 
 const shouldReturnAll = computed(() => {
     return (
-        (!tableDataStore.selectedStates ||
-            tableDataStore.selectedStates.length === 0) &&
-        (!tableDataStore.selectedSpecies ||
-            tableDataStore.selectedSpecies.length === 0)
+        (!stateSpeciesDataStore.selectedStates ||
+            stateSpeciesDataStore.selectedStates.length === 0) &&
+        (!stateSpeciesDataStore.selectedSpecies ||
+            stateSpeciesDataStore.selectedSpecies.length === 0)
     );
 });
 const isStateSelected = (state: string): boolean => {
     return (
         shouldReturnAll.value ||
-        !tableDataStore.selectedStates ||
-        tableDataStore.selectedStates.length === 0 ||
-        tableDataStore.selectedStates.includes(capitalizeEachWord(state))
+        !stateSpeciesDataStore.selectedStates ||
+        stateSpeciesDataStore.selectedStates.length === 0 ||
+        stateSpeciesDataStore.selectedStates.includes(capitalizeEachWord(state))
     );
 };
 const isSpeciesSelected = (species: string): boolean => {
     return (
         shouldReturnAll.value ||
-        !tableDataStore.selectedSpecies ||
-        tableDataStore.selectedSpecies.length === 0 ||
-        tableDataStore.selectedSpecies.includes(capitalizeEachWord(species))
+        !stateSpeciesDataStore.selectedSpecies ||
+        stateSpeciesDataStore.selectedSpecies.length === 0 ||
+        stateSpeciesDataStore.selectedSpecies.includes(
+            capitalizeEachWord(species)
+        )
     );
 };
 
@@ -105,7 +107,7 @@ function getSortedResults(newStateNotifications: StateData) {
                             state: capitalizeEachWord(state),
                             species: capitalizeEachWord(species),
                             notificationName: notification.name,
-                            notify: tableDataStore.userNotifications.includes(
+                            notify: stateSpeciesDataStore.userNotifications.includes(
                                 id
                             ),
                         };
@@ -121,7 +123,7 @@ function getSortedResults(newStateNotifications: StateData) {
 }
 
 watch(
-    () => tableDataStore.stateNotifications,
+    () => stateSpeciesDataStore.stateNotifications,
     (newStateNotifications) => {
         rows.value = getSortedResults(newStateNotifications);
     },

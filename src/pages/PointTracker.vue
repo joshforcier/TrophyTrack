@@ -8,11 +8,13 @@
 import { ref, computed } from 'vue';
 import { capitalizeEachWord } from '../composables/useCapitalize';
 import BaseTable from '../components/BaseTable.vue';
-import { useTableDataStore } from '../stores/tableData';
+import { useStateSpeciesDataStore } from '../stores/stateSpeciesData';
+import { usePointsStore } from '../stores/points';
 
-const tableDataStore = useTableDataStore();
-tableDataStore.getStateNotifications();
-tableDataStore.getUserPoints();
+const stateSpeciesDataStore = useStateSpeciesDataStore();
+stateSpeciesDataStore.getStateNotifications();
+const statePointsStore = usePointsStore();
+statePointsStore.getUserPoints();
 
 const columns = ref<
     {
@@ -55,31 +57,33 @@ const columns = ref<
 
 const shouldReturnAll = computed(() => {
     return (
-        (!tableDataStore.selectedStates ||
-            tableDataStore.selectedStates.length === 0) &&
-        (!tableDataStore.selectedSpecies ||
-            tableDataStore.selectedSpecies.length === 0)
+        (!stateSpeciesDataStore.selectedStates ||
+            stateSpeciesDataStore.selectedStates.length === 0) &&
+        (!stateSpeciesDataStore.selectedSpecies ||
+            stateSpeciesDataStore.selectedSpecies.length === 0)
     );
 });
 const isStateSelected = (state: string): boolean => {
     return (
         shouldReturnAll.value ||
-        !tableDataStore.selectedStates ||
-        tableDataStore.selectedStates.length === 0 ||
-        tableDataStore.selectedStates.includes(capitalizeEachWord(state))
+        !stateSpeciesDataStore.selectedStates ||
+        stateSpeciesDataStore.selectedStates.length === 0 ||
+        stateSpeciesDataStore.selectedStates.includes(capitalizeEachWord(state))
     );
 };
 const isSpeciesSelected = (species: string): boolean => {
     return (
         shouldReturnAll.value ||
-        !tableDataStore.selectedSpecies ||
-        tableDataStore.selectedSpecies.length === 0 ||
-        tableDataStore.selectedSpecies.includes(capitalizeEachWord(species))
+        !stateSpeciesDataStore.selectedSpecies ||
+        stateSpeciesDataStore.selectedSpecies.length === 0 ||
+        stateSpeciesDataStore.selectedSpecies.includes(
+            capitalizeEachWord(species)
+        )
     );
 };
 
 const rows = computed(() => {
-    const userPoints = tableDataStore.userPoints;
+    const userPoints = statePointsStore.userPoints;
     if (!userPoints) {
         return [];
     }

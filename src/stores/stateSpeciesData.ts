@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { StateData } from '../types/types';
 
-export const useTableDataStore = defineStore('tableData', () => {
+export const useStateSpeciesDataStore = defineStore('stateSpeciesData', () => {
     // State
     const selectedStates = ref<string[]>([]);
     const selectedSpecies = ref<string[]>([]);
@@ -35,7 +35,6 @@ export const useTableDataStore = defineStore('tableData', () => {
         },
     });
     const userNotifications = ref<string[]>([]);
-    const userPoints = ref<StateData>({});
 
     // Actions
     const getUserNotifications = () => {
@@ -44,31 +43,6 @@ export const useTableDataStore = defineStore('tableData', () => {
             'wyoming_elk_nonresident_preference_point',
             'montana_elk_bonus_point',
         ];
-    };
-
-    const getUserPoints = async () => {
-        userPoints.value = {
-            wyoming: {
-                elk: {
-                    bonus: 0,
-                    preference: 0,
-                },
-                'mule deer': {
-                    bonus: 0,
-                    preference: 1,
-                },
-            },
-            montana: {
-                elk: {
-                    bonus: 3,
-                    preference: 2,
-                },
-                'mule deer': {
-                    bonus: 0,
-                    preference: 0,
-                },
-            },
-        };
     };
 
     const getStateNotifications = async () => {
@@ -201,9 +175,7 @@ export const useTableDataStore = defineStore('tableData', () => {
         selectedSpecies,
         stateNotifications,
         userNotifications,
-        userPoints,
         getUserNotifications,
-        getUserPoints,
         getStateNotifications,
         updateUserNotifications,
     };

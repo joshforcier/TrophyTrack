@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/',
         component: () => import('layouts/MainLayout.vue'),
-        beforeEnter: requireAuth,
+        // beforeEnter: requireAuth,
         children: [
             { path: '', component: () => import('pages/IndexPage.vue') },
             {
