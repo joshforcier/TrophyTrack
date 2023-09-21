@@ -9,19 +9,23 @@
                 v-bind="link"
             />
         </q-list>
-        <q-btn
-            @click="userStore.logoutUser"
-            v-if="userStore.userData"
-            color="secondary"
-        >
-            Logout
-        </q-btn>
-        <q-btn to="/login" v-if="!userStore.userData" color="secondary">
-            Login
-        </q-btn>
-        <q-btn to="/register" v-if="!userStore.userData" color="secondary">
-            Register
-        </q-btn>
+
+        <q-btn-group square spread class="fixed-bottom">
+            <q-btn
+                @click="userStore.logoutUser"
+                v-if="userStore.userData"
+                color="secondary"
+            >
+                Logout
+            </q-btn>
+
+            <q-btn to="/login" v-if="!userStore.userData" color="secondary">
+                Login
+            </q-btn>
+            <q-btn to="/register" v-if="!userStore.userData" color="secondary">
+                Register
+            </q-btn>
+        </q-btn-group>
     </q-drawer>
 </template>
 
