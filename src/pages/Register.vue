@@ -1,19 +1,29 @@
 <template>
-    <div>
-        <h1>Register</h1>
-        <form @submit.prevent="handleSubmit">
-            <input type="email" placeholder="Email" v-model.trim="email" />
-            <input
-                type="password"
-                placeholder="Password"
-                v-model.trim="password"
-            />
+    <q-page class="flex justify-center items-center">
+        <q-card class="q-pa-md flex column justify-center items-center">
+            <h3>Register</h3>
+            <q-form @submit.prevent="handleSubmit" class="flex-center">
+                <q-input
+                    type="email"
+                    placeholder="Email"
+                    v-model.trim="email"
+                />
+                <q-input
+                    type="password"
+                    placeholder="Password"
+                    v-model.trim="password"
+                />
 
-            <input type="name" placeholder="Name" v-model.trim="name" />
-            <input type="phone" placeholder="Phone" v-model.trim="phone" />
-            <button type="submit">Create user</button>
-        </form>
-    </div>
+                <q-input type="name" placeholder="Name" v-model.trim="name" />
+                <q-input
+                    type="phone"
+                    placeholder="Phone"
+                    v-model.trim="phone"
+                />
+                <q-btn type="submit">Create user</q-btn>
+            </q-form>
+        </q-card>
+    </q-page>
 </template>
 
 <script setup>

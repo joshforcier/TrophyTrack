@@ -1,14 +1,21 @@
 <template>
-    <q-page padding>
-        <q-input v-model="name" label="First name"></q-input>
-        <q-input v-model="email" label="Email" required></q-input>
-        <q-input v-model="phone" label="Phone" required></q-input>
+    <q-page class="q-pa-md">
+        <q-card class="q-pa-md flex column">
+            <q-form>
+                <q-input v-model="name" label="First name"></q-input>
+                <q-input v-model="email" label="Email" clearable></q-input>
+                <q-input v-model="phone" label="Phone" clearable></q-input>
 
-        <span>Notify me by:</span>
-        <q-checkbox v-model="notifyMeBy.text" label="Text"></q-checkbox>
-        <q-checkbox v-model="notifyMeBy.email" label="Email"></q-checkbox>
-        <br />
-        <q-btn @click="update" color="primary">Save</q-btn>
+                <span>Notify me by:</span>
+                <q-checkbox v-model="notifyMeBy.text" label="Text"></q-checkbox>
+                <q-checkbox
+                    v-model="notifyMeBy.email"
+                    label="Email"
+                ></q-checkbox>
+                <br />
+                <q-btn @click="update" color="primary">Save</q-btn>
+            </q-form>
+        </q-card>
     </q-page>
 </template>
 

@@ -1,18 +1,27 @@
 <template>
-    <div>
-        <h1>Login</h1>
-        <form @submit.prevent="handleSubmit">
-            <input type="email" placeholder="Email" v-model.trim="email" />
-            <input
-                type="password"
-                placeholder="Password"
-                v-model.trim="password"
-            />
-            <q-btn type="submit" :loading="loading" color="primary"
-                >Submit</q-btn
+    <q-page class="flex justify-center items-center">
+        <q-card class="flex column justify-center items-center">
+            <h3>Login</h3>
+            <q-form
+                @submit.prevent="handleSubmit"
+                class="q-pa-md flex column justify-center items-center"
             >
-        </form>
-    </div>
+                <q-input
+                    type="email"
+                    placeholder="Email"
+                    v-model.trim="email"
+                />
+                <q-input
+                    type="password"
+                    placeholder="Password"
+                    v-model.trim="password"
+                />
+                <q-btn type="submit" :loading="loading" color="primary"
+                    >Submit</q-btn
+                >
+            </q-form>
+        </q-card>
+    </q-page>
 </template>
 
 <script setup>

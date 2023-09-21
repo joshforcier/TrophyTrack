@@ -1,5 +1,7 @@
 <template>
-    <BaseTable :rows="rows" :columns="columns" />
+    <q-page>
+        <BaseTable :rows="rows" :columns="columns" />
+    </q-page>
 </template>
 
 <script setup lang="ts">

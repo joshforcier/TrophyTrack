@@ -1,5 +1,5 @@
 <template>
-    <q-page padding>
+    <q-page class="q-pa-md">
         <Slogan />
         <p class="text-subtitle1 text-center">
             Trophy Track notifies you of application deadlines, tracks your

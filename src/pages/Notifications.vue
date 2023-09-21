@@ -1,11 +1,13 @@
 <template>
-    <BaseTable
-        title="Notifications"
-        :rows="rows"
-        :columns="columns"
-        @update:notify="handleNotifyUpdate"
-    />
-    <q-btn @click="tableDataStore.getStateNotifications"></q-btn>
+    <q-page>
+        <BaseTable
+            title="Notifications"
+            :rows="rows"
+            :columns="columns"
+            @update:notify="handleNotifyUpdate"
+        />
+        <q-btn @click="tableDataStore.getStateNotifications"></q-btn>
+    </q-page>
 </template>
 
 <script setup lang="ts">
