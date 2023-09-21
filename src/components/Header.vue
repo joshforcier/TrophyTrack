@@ -17,81 +17,21 @@
             <q-toggle v-model="isDark" color="white" :label="label" />
         </q-toolbar>
     </q-header>
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-        <q-list>
-            <q-item-label header></q-item-label>
-
-            <EssentialLink
-                v-for="link in essentialLinks"
-                :key="link.title"
-                v-bind="link"
-            />
-        </q-list>
-        <q-btn
-            @click="userStore.logoutUser"
-            v-if="userStore.userData"
-            color="secondary"
-        >
-            Logout
-        </q-btn>
-        <q-btn to="/login" v-if="!userStore.userData" color="secondary">
-            Login
-        </q-btn>
-    </q-drawer>
+    <NavMenu
+        :left-drawer-open="leftDrawerOpen"
+        @update:model-value="leftDrawerOpen = $event"
+    />
 </template>
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
 import { useQuasar } from 'quasar';
 import { useUserStore } from '../stores/user';
-
-import EssentialLink, {
-    EssentialLinkProps,
-} from 'components/EssentialLink.vue';
+import NavMenu from './NavMenu.vue';
 
 const userStore = useUserStore();
 
-const essentialLinks: EssentialLinkProps[] = [
-    {
-        title: 'How it works',
-        caption: '',
-        icon: 'o_help_center',
-        link: '/howitworks',
-    },
-    {
-        title: 'Track points',
-        caption: '',
-        icon: 'o_help_center',
-        link: '/points',
-    },
-    {
-        title: 'Notifications',
-        caption: '',
-        icon: 'o_help_center',
-        link: '/notifications',
-    },
-    {
-        title: 'My account',
-        caption: '',
-        icon: 'o_account',
-        link: '/account',
-    },
-    {
-        title: 'Register',
-        caption: '',
-        icon: 'o_account',
-        link: '/register',
-    },
-    {
-        title: 'Contact us',
-        caption: '',
-        icon: 'o_email',
-        link: '/contact',
-    },
-];
-
 const leftDrawerOpen = ref(false);
-
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
 }
@@ -109,14 +49,4 @@ watch(
 );
 
 const label = computed(() => (isDark.value ? 'Dark' : 'Light'));
-
-// const isLoggedIn = ref(false);
-// // runs after firebase is initialized
-// auth.onAuthStateChanged(function (user) {
-//     if (user) {
-//         isLoggedIn.value = true; // if we have a user
-//     } else {
-//         isLoggedIn.value = false; // if we do not
-//     }
-// });
 </script>
