@@ -3,7 +3,7 @@
         <Slogan />
         <p class="text-subtitle1 text-center">
             Trophy Track notifies you of application deadlines, tracks your
-            bonus/preference points, and recommends draws with the highest odds
+            bonus/preference points, and recommends tags with the highest odds
             based on your points.
         </p>
         <div class="row justify-evenly">
@@ -13,6 +13,9 @@
             <router-link to="/notifications">
                 <q-btn color="primary" label="Notifications" />
             </router-link>
+            <!-- <router-link to="/tags">
+                <q-btn color="primary" label="Find tags" />
+            </router-link> -->
         </div>
     </q-page>
 </template>

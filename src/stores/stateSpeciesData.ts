@@ -4,7 +4,6 @@ import { StateData } from '../types/types';
 import { capitalizeEachWord } from '../composables/useCapitalize';
 
 export const useStateSpeciesDataStore = defineStore('stateSpeciesData', () => {
-    // State
     const selectedStates = ref<string[]>([]);
     const selectedSpecies = ref<string[]>([]);
     const stateNotifications = ref<StateData>({
@@ -37,7 +36,6 @@ export const useStateSpeciesDataStore = defineStore('stateSpeciesData', () => {
     });
     const userNotifications = ref<string[]>([]);
 
-    // Actions
     const getUserNotifications = () => {
         userNotifications.value = [
             'wyoming_elk_nonresident',
@@ -68,6 +66,27 @@ export const useStateSpeciesDataStore = defineStore('stateSpeciesData', () => {
             selectedSpecies.value.includes(capitalizeEachWord(species))
         );
     };
+
+    const allSpecies = computed(() => {
+        const speciesList: string[] = [];
+        if (!stateNotifications.value) return [];
+
+        for (const stateKey in stateNotifications.value) {
+            const speciesInState = stateNotifications.value[stateKey];
+
+            for (const speciesKey in speciesInState) {
+                speciesList.push(capitalizeEachWord(speciesKey));
+            }
+        }
+
+        return [...new Set(speciesList)];
+    });
+    const allStates = computed(() => {
+        if (!stateNotifications.value) return [];
+        return [...new Set(Object.keys(stateNotifications.value))]
+            .map((st) => capitalizeEachWord(st))
+            .sort();
+    });
 
     const getStateNotifications = async () => {
         stateNotifications.value = {
@@ -205,5 +224,7 @@ export const useStateSpeciesDataStore = defineStore('stateSpeciesData', () => {
         shouldReturnAll,
         isStateSelected,
         isSpeciesSelected,
+        allSpecies,
+        allStates,
     };
 });

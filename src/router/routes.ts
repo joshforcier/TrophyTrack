@@ -29,6 +29,10 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/Notifications.vue'),
             },
             {
+                path: '/tags',
+                component: () => import('pages/FindTags.vue'),
+            },
+            {
                 path: '/account',
                 component: () => import('pages/MyAccount.vue'),
             },

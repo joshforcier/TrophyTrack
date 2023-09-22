@@ -26,7 +26,7 @@
     </q-page>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import { useUserStore } from '../stores/user';
 

@@ -19,10 +19,10 @@
                 Logout
             </q-btn>
 
-            <q-btn to="/login" v-if="!userStore.userData" color="secondary">
+            <q-btn to="/login" v-if="!userStore.userData" color="primary">
                 Login
             </q-btn>
-            <q-btn to="/register" v-if="!userStore.userData" color="secondary">
+            <q-btn to="/register" v-if="!userStore.userData" color="primary">
                 Register
             </q-btn>
         </q-btn-group>
@@ -53,21 +53,27 @@ const essentialLinks: EssentialLinkProps[] = [
         link: '/howitworks',
     },
     {
-        title: 'Track points',
-        caption: '',
-        icon: 'o_help_center',
-        link: '/points',
-    },
-    {
         title: 'Notifications',
         caption: '',
-        icon: 'o_help_center',
+        icon: 'o_feedback',
         link: '/notifications',
     },
     {
+        title: 'Track points',
+        caption: '',
+        icon: 'o_assessment',
+        link: '/points',
+    },
+    // {
+    //     title: 'Find tags',
+    //     caption: '',
+    //     icon: 'o_help_center',
+    //     link: '/tags',
+    // },
+    {
         title: 'My account',
         caption: '',
-        icon: 'o_account',
+        icon: 'o_account_box',
         link: '/account',
     },
     {

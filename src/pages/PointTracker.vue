@@ -61,7 +61,7 @@ const rows = computed(() => {
         return [];
     }
 
-    let results = Object.entries(userPoints)?.flatMap(
+    const results = Object.entries(userPoints)?.flatMap(
         ([state, speciesData]) => {
             if (!stateSpeciesDataStore.isStateSelected(state)) return [];
 

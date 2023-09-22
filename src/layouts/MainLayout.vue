@@ -3,8 +3,8 @@
 
     <router-view />
     <q-page-sticky position="bottom">
-        <q-btn-group spread class="fixed-bottom">
-            <q-btn to="/register" v-if="!userStore.userData" color="secondary">
+        <q-btn-group square spread class="fixed-bottom">
+            <q-btn to="/register" v-if="!userStore.userData" color="primary">
                 Register
             </q-btn>
         </q-btn-group>

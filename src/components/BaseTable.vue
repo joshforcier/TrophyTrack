@@ -17,7 +17,7 @@
                         <q-select
                             v-model="stateSpeciesDataStore.selectedStates"
                             multiple
-                            :options="states"
+                            :options="stateSpeciesDataStore.allStates"
                             use-chips
                             stack-label
                             dense
@@ -30,7 +30,7 @@
                         <q-select
                             v-model="stateSpeciesDataStore.selectedSpecies"
                             multiple
-                            :options="species"
+                            :options="stateSpeciesDataStore.allSpecies"
                             use-chips
                             stack-label
                             dense
@@ -73,9 +73,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useStateSpeciesDataStore } from '../stores/stateSpeciesData';
-import { capitalizeEachWord } from '../composables/useCapitalize';
 import { RowType, ColumnType } from '../types/types';
 
 const stateSpeciesDataStore = useStateSpeciesDataStore();
@@ -112,33 +111,11 @@ const props = defineProps({
 
 const emits = defineEmits(['update:notify']);
 
-const species = computed(() => {
-    const speciesList: string[] = [];
-    if (!stateSpeciesDataStore.stateNotifications) return [];
-
-    for (const stateKey in stateSpeciesDataStore.stateNotifications) {
-        const speciesInState =
-            stateSpeciesDataStore.stateNotifications[stateKey];
-
-        for (const speciesKey in speciesInState) {
-            speciesList.push(capitalizeEachWord(speciesKey));
-        }
-    }
-
-    return [...new Set(speciesList)];
-});
-const states = computed(() => {
-    if (!stateSpeciesDataStore.stateNotifications) return [];
-    return [...new Set(Object.keys(stateSpeciesDataStore.stateNotifications))]
-        .map((st) => capitalizeEachWord(st))
-        .sort();
-});
-
 watch(
     () => stateSpeciesDataStore.stateNotifications,
     () => {
-        species.value;
-        states.value;
+        stateSpeciesDataStore.allSpecies;
+        stateSpeciesDataStore.allStates;
     },
     { deep: true }
 );
