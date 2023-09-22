@@ -55,33 +55,6 @@ const columns = ref<
     },
 ]);
 
-const shouldReturnAll = computed(() => {
-    return (
-        (!stateSpeciesDataStore.selectedStates ||
-            stateSpeciesDataStore.selectedStates.length === 0) &&
-        (!stateSpeciesDataStore.selectedSpecies ||
-            stateSpeciesDataStore.selectedSpecies.length === 0)
-    );
-});
-const isStateSelected = (state: string): boolean => {
-    return (
-        shouldReturnAll.value ||
-        !stateSpeciesDataStore.selectedStates ||
-        stateSpeciesDataStore.selectedStates.length === 0 ||
-        stateSpeciesDataStore.selectedStates.includes(capitalizeEachWord(state))
-    );
-};
-const isSpeciesSelected = (species: string): boolean => {
-    return (
-        shouldReturnAll.value ||
-        !stateSpeciesDataStore.selectedSpecies ||
-        stateSpeciesDataStore.selectedSpecies.length === 0 ||
-        stateSpeciesDataStore.selectedSpecies.includes(
-            capitalizeEachWord(species)
-        )
-    );
-};
-
 const rows = computed(() => {
     const userPoints = statePointsStore.userPoints;
     if (!userPoints) {
@@ -90,10 +63,11 @@ const rows = computed(() => {
 
     let results = Object.entries(userPoints)?.flatMap(
         ([state, speciesData]) => {
-            if (!isStateSelected(state)) return [];
+            if (!stateSpeciesDataStore.isStateSelected(state)) return [];
 
             return Object.entries(speciesData).flatMap(([species, points]) => {
-                if (!isSpeciesSelected(species)) return [];
+                if (!stateSpeciesDataStore.isSpeciesSelected(species))
+                    return [];
 
                 return generateRow(state, species, points);
             });

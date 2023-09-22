@@ -6,12 +6,11 @@
             :columns="columns"
             @update:notify="handleNotifyUpdate"
         />
-        <q-btn @click="stateSpeciesDataStore.getStateNotifications"></q-btn>
     </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { capitalizeEachWord } from '../composables/useCapitalize';
 import BaseTable from '../components/BaseTable.vue';
 import { useStateSpeciesDataStore } from '../stores/stateSpeciesData';
@@ -59,33 +58,6 @@ const columns = ref<
     },
 ]);
 
-const shouldReturnAll = computed(() => {
-    return (
-        (!stateSpeciesDataStore.selectedStates ||
-            stateSpeciesDataStore.selectedStates.length === 0) &&
-        (!stateSpeciesDataStore.selectedSpecies ||
-            stateSpeciesDataStore.selectedSpecies.length === 0)
-    );
-});
-const isStateSelected = (state: string): boolean => {
-    return (
-        shouldReturnAll.value ||
-        !stateSpeciesDataStore.selectedStates ||
-        stateSpeciesDataStore.selectedStates.length === 0 ||
-        stateSpeciesDataStore.selectedStates.includes(capitalizeEachWord(state))
-    );
-};
-const isSpeciesSelected = (species: string): boolean => {
-    return (
-        shouldReturnAll.value ||
-        !stateSpeciesDataStore.selectedSpecies ||
-        stateSpeciesDataStore.selectedSpecies.length === 0 ||
-        stateSpeciesDataStore.selectedSpecies.includes(
-            capitalizeEachWord(species)
-        )
-    );
-};
-
 const rows = ref();
 function formatForId(str: string): string {
     return str.toLowerCase().replace(/\s+/g, '_');
@@ -93,10 +65,12 @@ function formatForId(str: string): string {
 
 function getSortedResults(newStateNotifications: StateData) {
     return Object.entries(newStateNotifications)
-        .filter(([state]) => isStateSelected(state))
+        .filter(([state]) => stateSpeciesDataStore.isStateSelected(state))
         .flatMap(([state, speciesData]) =>
             Object.entries(speciesData)
-                .filter(([species]) => isSpeciesSelected(species))
+                .filter(([species]) =>
+                    stateSpeciesDataStore.isSpeciesSelected(species)
+                )
                 .flatMap(([species, { notifications }]) =>
                     notifications?.map((notification) => {
                         const id = `${formatForId(state)}_${formatForId(
@@ -123,11 +97,14 @@ function getSortedResults(newStateNotifications: StateData) {
 }
 
 watch(
-    () => stateSpeciesDataStore.stateNotifications,
-    (newStateNotifications) => {
-        rows.value = getSortedResults(newStateNotifications);
-    },
-    { deep: true }
+    [
+        () => stateSpeciesDataStore.stateNotifications,
+        () => stateSpeciesDataStore.selectedSpecies,
+        () => stateSpeciesDataStore.selectedStates,
+    ],
+    () => {
+        rows.value = getSortedResults(stateSpeciesDataStore.stateNotifications);
+    }
 );
 
 function handleNotifyUpdate({

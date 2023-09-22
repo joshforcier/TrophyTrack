@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { StateData } from '../types/types';
+import { capitalizeEachWord } from '../composables/useCapitalize';
 
 export const useStateSpeciesDataStore = defineStore('stateSpeciesData', () => {
     // State
@@ -43,6 +44,29 @@ export const useStateSpeciesDataStore = defineStore('stateSpeciesData', () => {
             'wyoming_elk_nonresident_preference_point',
             'montana_elk_bonus_point',
         ];
+    };
+
+    const shouldReturnAll = computed(() => {
+        return (
+            (!selectedStates.value || selectedStates.value.length === 0) &&
+            (!selectedSpecies.value || selectedSpecies.value.length === 0)
+        );
+    });
+    const isStateSelected = (state: string): boolean => {
+        return (
+            shouldReturnAll.value ||
+            !selectedStates.value ||
+            selectedStates.value.length === 0 ||
+            selectedStates.value.includes(capitalizeEachWord(state))
+        );
+    };
+    const isSpeciesSelected = (species: string): boolean => {
+        return (
+            shouldReturnAll.value ||
+            !selectedSpecies.value ||
+            selectedSpecies.value.length === 0 ||
+            selectedSpecies.value.includes(capitalizeEachWord(species))
+        );
     };
 
     const getStateNotifications = async () => {
@@ -178,5 +202,8 @@ export const useStateSpeciesDataStore = defineStore('stateSpeciesData', () => {
         getUserNotifications,
         getStateNotifications,
         updateUserNotifications,
+        shouldReturnAll,
+        isStateSelected,
+        isSpeciesSelected,
     };
 });
